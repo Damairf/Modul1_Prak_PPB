@@ -10,7 +10,7 @@ async getAll(page = 1, limit = 3, search = "") {
       .select("id, sku, name, description, price, quantity, category_id, supplier_id");
 
     if (search) {
-      query = query.ilike("sku", `%${search}%`);
+      query = query.ilike("name", `%${search}%`);
     }
 
     const { data, error } = await query.range(from, to);
