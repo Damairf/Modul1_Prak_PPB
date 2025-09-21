@@ -3,10 +3,21 @@ import { MedicationModel } from "../models/medicationModel.js";
 export const MedicationController = {
   async getAll(req, res) {
     try {
-      const meds = await MedicationModel.getAll();
-      res.json(meds);
-    } catch (err) {
-      res.status(500).json({ error: err.message });
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 3;
+      const search = req.query.search || ""; // Ambil kata kunci pencarian
+
+      const data = await MedicationModel.getAll(page, limit, search);
+
+      res.json({
+        page,
+        limit,
+        search,
+        count: data.length,
+        data,
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
   },
 
@@ -43,6 +54,15 @@ export const MedicationController = {
       res.json({ message: "Deleted successfully" });
     } catch (err) {
       res.status(400).json({ error: err.message });
+    }
+  },
+
+  async getTotal(req, res) {
+    try {
+      const total = await MedicationModel.getTotal();
+      res.json({ total_quantity: total });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
     }
   },
 };
